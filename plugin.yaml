@@ -1,0 +1,28 @@
+name: OCI Resource Model Source
+version: 1.0
+rundeckPluginVersion: 1.0
+author: psadmin.io
+date: 10/13/2020
+url: psadmin.io
+providers:
+    - name: OCI-Resource-Model-Source
+      service: ResourceModelSource
+      plugin-type: script
+      script-interpreter: python3
+      script-file: nodes.py
+      resource-format: resourcejson
+      config:
+        - type: String
+          name: compartment
+          title: Compartment ID
+          description: Enter the Compartment ID that contains the Nodes.
+          required: true
+        - type: String
+          name: node_user
+          title: Default OCI Node User
+          description: Enter the default user to use when connecting to OCI Nodes
+          default: opc
+        - type: String
+          name: oci_config
+          title: OCI Configuration File
+          description: Enter the OCI Configuration File location. Leave blank to use Instance Principal. (optional)
