@@ -7,10 +7,13 @@ A Resource Model Source plugin that provides OCI Instances as nodes for Rundeck
 * Will not traverse sub compartments
 * Will not handle duplicate display names
 * Hostname will be the private IP address from the primary VNIC
+    * Unless an `Override VNIC Tag` is specified
 * Username will be the same for all nodes
 
 # Setup
-* Place zip file in `/var/lib/rundeck/libext/`
+* Download a release zip file from GitHub and place in `$RD_BASE/libext`
+   * Default: `RD_BASE=/var/lib/rundeck`
+   * Alternative: Clone repo and run `deploy.sh` as user `rundeck`
 * Setup Rundeck server with OCI Access using Instance Principal or OCI Config File
 * Logout and back in of Rundeck
 * Select Project, Project Settings, Edit Nodes
