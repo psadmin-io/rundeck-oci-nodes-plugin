@@ -19,6 +19,8 @@ except KeyError as e:
 config_file = environ.get('RD_CONFIG_OCI_CONFIG', None)
 node_user = environ.get('RD_CONFIG_NODE_USER', 'opc')
 vnic_tag = environ.get('RD_CONFIG_VNIC_TAG', None)
+defined_list = environ.get('RD_CONFIG_DEFINED_TAGS', None)
+freeform_enabled = environ.get('RD_CONFIG_FREEFORM_TAGS', None)
 
 # oci config
 
@@ -48,11 +50,12 @@ for instance in instances:
     node = {}
     node["nodename"] = instance.display_name
     node["username"] = node_user
+
+    # hostname
     vnic_attachments = compute.list_vnic_attachments(
         compartment_id=compartment_id, 
         instance_id=instance.id
-    ).data
-    
+    ).data    
     for vnic_attachment in vnic_attachments:
         vnic = network.get_vnic(vnic_attachment.vnic_id).data
         
@@ -64,6 +67,21 @@ for instance in instances:
             # use vnic tag override ip
             node["hostname"] = vnic.private_ip
             break
+
+    # tags
+    if freeform_enabled == "true":
+        # convert all freeform tag values to comma seperated string
+        node["tags"] = ', '.join(filter(None, instance.freeform_tags))
+
+    if defined_list:
+        for namespace in defined_list.split(','):
+            namespace_tags = instance.defined_tags.get(namespace)
+            if namespace_tags:
+                # convert all defined tag values to comma seperated string
+                if node["tags"]:
+                    node["tags"] = node["tags"] + ", " + ', '.join(filter(None, namespace_tags.values()))
+                else:
+                    node["tags"] = ', '.join(filter(None, namespace_tags.values()))
 
     nodes[instance.display_name] = node
 
