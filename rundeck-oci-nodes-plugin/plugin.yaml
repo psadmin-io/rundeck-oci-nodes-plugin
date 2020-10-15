@@ -26,3 +26,7 @@ providers:
           name: oci_config
           title: OCI Configuration File
           description: Enter the OCI Configuration File location. Leave blank to use Instance Principal. (optional)
+        - type: String
+          name: vnic_tag
+          title: VNIC Override Tag
+          description: Enter a freeform Tag Key that will specify which VNIC Rundeck should connect to. If not specified or a VNIC is not found with this Tag, the primary VNIC will be used. (optional)

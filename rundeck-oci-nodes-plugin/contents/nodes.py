@@ -7,18 +7,22 @@ except ImportError as e:
     exit()
 
 # plugin properties
-# required
+
+## required
 try:
     compartment_id = environ['RD_CONFIG_COMPARTMENT']
 except KeyError as e:
     print('ERROR: compartment plugin property not specified') 
     exit()
 
-# optional
+## optional
 config_file = environ.get('RD_CONFIG_OCI_CONFIG', None)
 node_user = environ.get('RD_CONFIG_NODE_USER', 'opc')
+vnic_tag = environ.get('RD_CONFIG_VNIC_TAG', None)
 
-# use oci config file, if provided
+# oci config
+
+## use oci config file, if provided
 if config_file:
     try:
         config = oci.config.from_file(config_file)
@@ -27,7 +31,7 @@ if config_file:
         exit()
     compute = oci.core.ComputeClient(config)
     network = oci.core.VirtualNetworkClient(config)
-# assume InstancePrincipal, if oci config not provided
+## assume InstancePrincipal, if oci config not provided
 else:
     signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
     compute = oci.core.ComputeClient({}, signer=signer)
@@ -37,6 +41,10 @@ else:
 instances = compute.list_instances(compartment_id).data
 nodes = {}
 for instance in instances:
+    if instance.lifecycle_state == 'TERMINATED':
+        # skip terminated instances
+        continue
+
     node = {}
     node["nodename"] = instance.display_name
     node["username"] = node_user
@@ -47,8 +55,15 @@ for instance in instances:
     
     for vnic_attachment in vnic_attachments:
         vnic = network.get_vnic(vnic_attachment.vnic_id).data
+        
         if vnic.is_primary:
+            # use primary vnic ip
             node["hostname"] = vnic.private_ip
+        
+        if vnic_tag in vnic.freeform_tags or vnic_tag in vnic.defined_tags:
+            # use vnic tag override ip
+            node["hostname"] = vnic.private_ip
+            break
 
     nodes[instance.display_name] = node
 
