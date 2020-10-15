@@ -30,3 +30,12 @@ providers:
           name: vnic_tag
           title: VNIC Override Tag
           description: Enter a freeform Tag Key that will specify which VNIC Rundeck should connect to. If not specified or a VNIC is not found with this Tag, the primary VNIC will be used. (optional)
+        - type: String
+          name: defined_tags
+          title: OCI Defined Tag Namespaces
+          description: Enter a comma seperated list of OCI Defined Tag Namespaces to be included in Tag Value mapping to Rundeck Nodes. (optional)
+        - type: Boolean
+          name: freeform_tags
+          title: OCI Freeform Tag Values
+          description: Enable OCI Freeform Tag Value mapping to Rundeck Nodes. (optional)
+
