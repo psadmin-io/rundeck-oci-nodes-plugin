@@ -37,6 +37,9 @@ else:
 instances = compute.list_instances(compartment_id).data
 nodes = {}
 for instance in instances:
+    if instance.lifecycle_state == 'TERMINATED':
+        continue
+
     node = {}
     node["nodename"] = instance.display_name
     node["username"] = node_user
