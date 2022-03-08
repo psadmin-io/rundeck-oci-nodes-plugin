@@ -9,6 +9,7 @@ A Resource Model Source plugin that provides OCI Instances as nodes for Rundeck
 * Hostname will be the private IP address from the primary VNIC
     * Unless an `Override VNIC Tag` is specified
 * Username will be the same for all nodes
+* The OCI Tag namespace `rundeck` is used for setting node attributes (configurable)
 
 # Setup
 * Download a release zip file from GitHub and place in `$RD_BASE/libext`
@@ -30,3 +31,17 @@ If Rundeck is running on an OCI Instance, then you can setup Instance Principal 
 * Add a Policy to allow the Dynamic Group read access to instances
     * Identity > Policies
     * Example" `allow dynamic-group rundeck to read instance-family in tenancy`
+    
+
+# Node Classification
+
+The plugin will use any freeform tags or structured tags and add them as tags for the node. If you want to add attributes to the node, like `osFamily`, you can add a new OCI Tag namespace. 
+
+By default, the plugin will look for the `rundeck` OCI Tag namespace. Any tags defined for an instance will be added as an attribute to the node instead of added to the nodes tags. For example, the tag `rundeck.osfamily: windows` will be added to the node like this:
+
+```yaml
+- node1
+  osfamily: windows
+  tags: ...
+```
+

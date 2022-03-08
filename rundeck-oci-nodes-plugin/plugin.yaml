@@ -13,6 +13,10 @@ providers:
       resource-format: resourcejson
       config:
         - type: String
+          name: compartment_desc
+          title: Compartment Description
+          description: Description of Compartment
+        - type: String
           name: compartment
           title: Compartment ID
           description: Enter the Compartment ID that contains the Nodes.
@@ -34,6 +38,11 @@ providers:
           name: defined_tags
           title: OCI Defined Tag Namespaces
           description: Enter a comma seperated list of OCI Defined Tag Namespaces to be included in Tag Value mapping to Rundeck Nodes. (optional)
+        - type: String
+          name: attribute_namespace
+          title: Attributes Tag Namespace
+          description: OCI Tag Namespace to add attributes to nodes. Default is `rundeck`
+          default: rundeck
         - type: Boolean
           name: freeform_tags
           title: OCI Freeform Tag Values

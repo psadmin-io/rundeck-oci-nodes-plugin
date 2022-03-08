@@ -21,6 +21,7 @@ node_user = environ.get('RD_CONFIG_NODE_USER', 'opc')
 vnic_tag = environ.get('RD_CONFIG_VNIC_TAG', None)
 defined_list = environ.get('RD_CONFIG_DEFINED_TAGS', None)
 freeform_enabled = environ.get('RD_CONFIG_FREEFORM_TAGS', None)
+attribute_namespace = environ.get('RD_CONFIG_ATTRIBUBTE_NAMESPACE', 'rundeck')
 
 # oci config
 
@@ -75,13 +76,18 @@ for instance in instances:
 
     if defined_list:
         for namespace in defined_list.split(','):
-            namespace_tags = instance.defined_tags.get(namespace)
-            if namespace_tags:
+            if namespace == attribute_namespace:
+                rd_tags = instance.defined_tags.get(namespace)
+                if (rd_tags is not None):
+                    node.update(rd_tags)
+            else:
+                namespace_tags = instance.defined_tags.get(namespace)
+                if namespace_tags:
                 # convert all defined tag values to comma seperated string
-                if node["tags"]:
-                    node["tags"] = node["tags"] + ", " + ', '.join(filter(None, namespace_tags.values()))
-                else:
-                    node["tags"] = ', '.join(filter(None, namespace_tags.values()))
+                    if 'tags' in node:
+                        node["tags"] = node["tags"] + ", " + ', '.join(filter(None, namespace_tags.values()))
+                    else:
+                        node["tags"] = ', '.join(filter(None, namespace_tags.values()))
 
     nodes[instance.display_name] = node
 
