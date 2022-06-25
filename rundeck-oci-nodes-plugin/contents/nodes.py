@@ -76,18 +76,27 @@ for instance in instances:
 
     if defined_list:
         for namespace in defined_list.split(','):
-            if namespace == attribute_namespace:
-                rd_tags = instance.defined_tags.get(namespace)
-                if (rd_tags is not None):
-                    node.update(rd_tags)
-            else:
-                namespace_tags = instance.defined_tags.get(namespace)
-                if namespace_tags:
-                # convert all defined tag values to comma seperated string
-                    if 'tags' in node:
-                        node["tags"] = node["tags"] + ", " + ', '.join(filter(None, namespace_tags.values()))
-                    else:
-                        node["tags"] = ', '.join(filter(None, namespace_tags.values()))
+                if namespace == attribute_namespace:
+                    rd_tags = instance.defined_tags.get(namespace)
+                    if (rd_tags is not None):
+                        node.update(rd_tags)
+                else:
+                    # add as attributes
+                    # TODO
+                    namespace_tags = instance.defined_tags.get(namespace)
+                    if namespace_tags:
+                        # convert all defined tag values to attributes
+                        for k, v in namespace_tags.items():
+                            node[namespace + ":" + k] = v
+                #else:
+                #    # add as tags
+                #    namespace_tags = instance.defined_tags.get(namespace)
+                #    if namespace_tags:
+                #    # convert all defined tag values to comma seperated string
+                #        if 'tags' in node:
+                #            node["tags"] = node["tags"] + ", " + ', '.join(filter(None, namespace_tags.values()))
+                #        else:
+                #            node["tags"] = ', '.join(filter(None, namespace_tags.values()))
 
     nodes[instance.display_name] = node
 
