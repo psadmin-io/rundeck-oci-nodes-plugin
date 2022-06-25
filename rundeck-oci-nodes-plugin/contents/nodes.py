@@ -88,6 +88,15 @@ for instance in instances:
                         node["tags"] = node["tags"] + ", " + ', '.join(filter(None, namespace_tags.values()))
                     else:
                         node["tags"] = ', '.join(filter(None, namespace_tags.values()))
+    # Node user override by service account tag
+    # TODO maybe put this in the other tag logic?
+    # hard coded Compute.ServiceAccount as the tag, change to variable.
+    if defined_list:
+        for namespace in defined_list.split(','):
+            if namespace == "Compute":
+                compute_tags = instance.defined_tags.get(namespace)
+                if compute_tags["ServiceAccount"]:
+                    node["username"] = compute_tags["ServiceAccount"]
 
     nodes[instance.display_name] = node
 
