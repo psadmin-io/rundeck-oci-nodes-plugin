@@ -40,7 +40,7 @@ else:
     # set the region in the config and signer
     
     signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
-    signer.region = region
+    # signer.region = region
     config = {'region': region}
     compute = oci.core.ComputeClient(config, signer=signer)
     network = oci.core.VirtualNetworkClient(config, signer=signer)
