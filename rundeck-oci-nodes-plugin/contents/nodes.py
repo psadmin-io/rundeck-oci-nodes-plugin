@@ -22,6 +22,7 @@ vnic_tag = environ.get('RD_CONFIG_VNIC_TAG', None)
 defined_list = environ.get('RD_CONFIG_DEFINED_TAGS', None)
 freeform_enabled = environ.get('RD_CONFIG_FREEFORM_TAGS', None)
 attribute_namespace = environ.get('RD_CONFIG_ATTRIBUBTE_NAMESPACE', 'rundeck')
+region = environ.get('RD_CONFIG_ATTRIBUBTE_REGION', 'us-ashburn-1')
 
 # oci config
 
@@ -36,9 +37,13 @@ if config_file:
     network = oci.core.VirtualNetworkClient(config)
 ## assume InstancePrincipal, if oci config not provided
 else:
+    # set the region in the config and signer
+    
     signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
-    compute = oci.core.ComputeClient({}, signer=signer)
-    network = oci.core.VirtualNetworkClient({},signer=signer)
+    signer.region = region
+    config = {'region': region}
+    compute = oci.core.ComputeClient(config, signer=signer)
+    network = oci.core.VirtualNetworkClient(config, signer=signer)
 
 # process nodes
 instances = compute.list_instances(compartment_id).data
