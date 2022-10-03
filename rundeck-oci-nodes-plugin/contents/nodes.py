@@ -22,7 +22,7 @@ vnic_tag = environ.get('RD_CONFIG_VNIC_TAG', None)
 defined_list = environ.get('RD_CONFIG_DEFINED_TAGS', None)
 freeform_enabled = environ.get('RD_CONFIG_FREEFORM_TAGS', None)
 attribute_namespace = environ.get('RD_CONFIG_ATTRIBUBTE_NAMESPACE', 'rundeck')
-region = environ.get('RD_CONFIG_ATTRIBUBTE_REGION', 'us-ashburn-1')
+region = environ.get('RD_CONFIG_REGION', 'us-ashburn-1')
 
 # oci config
 
