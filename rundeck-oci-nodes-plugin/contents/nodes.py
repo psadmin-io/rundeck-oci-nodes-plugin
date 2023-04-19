@@ -81,11 +81,7 @@ for instance in instances:
 
     if defined_list:
         for namespace in defined_list.split(','):
-            if namespace == attribute_namespace:
-                rd_tags = instance.defined_tags.get(namespace)
-                if (rd_tags is not None):
-                    node.update(rd_tags)
-            else:
+            if namespace != attribute_namespace:
                 namespace_tags = instance.defined_tags.get(namespace)
                 if namespace_tags:
                 # convert all defined tag values to comma seperated string
@@ -93,6 +89,11 @@ for instance in instances:
                         node["tags"] = node["tags"] + ", " + ', '.join(filter(None, namespace_tags.values()))
                     else:
                         node["tags"] = ', '.join(filter(None, namespace_tags.values()))
+
+    # Add "rundeck" tags as attributes to the node
+    rd_tags = instance.defined_tags.get(attribute_namespace)
+    if (rd_tags is not None):
+        node.update(rd_tags)
 
     nodes[instance.display_name] = node
 
